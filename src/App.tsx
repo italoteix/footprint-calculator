@@ -1,17 +1,20 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { BrowserRouter } from 'react-router-dom';
+
+import { AppRoutes } from './Routes';
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ChakraProvider>
-        <div className='App'>
-          <h1>Footprint Calculator</h1>
-        </div>
-      </ChakraProvider>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <ChakraProvider>
+          <AppRoutes />
+        </ChakraProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
   );
 }
 
