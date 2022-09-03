@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 
 import { Header } from './components/Header';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppRoutes } from './Routes';
 import theme from './theme';
 import './theme/styles.css';
@@ -14,8 +15,10 @@ function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider theme={theme}>
-          <Header />
-          <AppRoutes />
+          <ErrorBoundary>
+            <Header />
+            <AppRoutes />
+          </ErrorBoundary>
         </ChakraProvider>
       </QueryClientProvider>
     </BrowserRouter>
