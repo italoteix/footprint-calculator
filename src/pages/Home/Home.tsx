@@ -1,4 +1,6 @@
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import {
+  Button,
   Container,
   Flex,
   Grid,
@@ -14,8 +16,19 @@ import {
 } from '@chakra-ui/react';
 
 import { ReactComponent as AirplaneIcon } from '../../assets/images/airplane.svg';
+import { TravelType } from '../../model';
+
+interface Inputs {
+  departure: string;
+  destination: string;
+  numberOfTravelers: number;
+  type: TravelType;
+}
 
 export const Home = () => {
+  const { handleSubmit, control } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
   return (
     <Container maxW='container.xl' pt={14}>
       <Grid templateRows='auto auto' templateColumns='2fr 1fr' gap={10}>
@@ -37,16 +50,43 @@ export const Home = () => {
             </Heading>
           </Flex>
 
-          <VStack spacing={6}>
-            <Input placeholder='From*' />
-            <Input placeholder='To*' />
-            <NumberInput w='100%'>
-              <NumberInputField placeholder='Number of travelers*' />
-            </NumberInput>
-            <Select placeholder='Type*'>
-              <option value='option1'>Option 1</option>
-              <option value='option2'>Option 2</option>
-            </Select>
+          <VStack spacing={6} as='form' onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+              name='departure'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <Input placeholder='From*' {...field} />}
+            />
+            <Controller
+              name='destination'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => <Input placeholder='To*' {...field} />}
+            />
+            <Controller
+              name='numberOfTravelers'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <NumberInput w='100%' {...field}>
+                  <NumberInputField placeholder='Number of travelers*' />
+                </NumberInput>
+              )}
+            />
+            <Controller
+              name='type'
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <Select placeholder='Type*' {...field}>
+                  <option value='option1'>Option 1</option>
+                  <option value='option2'>Option 2</option>
+                </Select>
+              )}
+            />
+            <Button type='submit' colorScheme='brand' alignSelf='flex-start' w='150px'>
+              Calculate
+            </Button>
           </VStack>
         </GridItem>
 
