@@ -7,20 +7,21 @@ import {
   GridItem,
   Heading,
   Icon,
-  Input,
   NumberInput,
   NumberInputField,
   Select,
   Text,
   VStack
 } from '@chakra-ui/react';
+import { PropsValue } from 'chakra-react-select';
 
 import { ReactComponent as AirplaneIcon } from '../../assets/images/airplane.svg';
 import { TravelType } from '../../model';
+import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
 
 interface Inputs {
-  departure: string;
-  destination: string;
+  departure: PropsValue<AirportOption>;
+  destination: PropsValue<AirportOption>;
   numberOfTravelers: number;
   type: TravelType;
 }
@@ -55,13 +56,13 @@ export const Home = () => {
               name='departure'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <Input placeholder='From*' {...field} />}
+              render={({ field }) => <AirplaneAutocomplete placeholder='From*' {...field} />}
             />
             <Controller
               name='destination'
               control={control}
               rules={{ required: true }}
-              render={({ field }) => <Input placeholder='To*' {...field} />}
+              render={({ field }) => <AirplaneAutocomplete placeholder='To*' {...field} />}
             />
             <Controller
               name='numberOfTravelers'
