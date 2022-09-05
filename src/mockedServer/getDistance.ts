@@ -20,22 +20,6 @@ function calcCrow(lat1: number, lon1: number, lat2: number, lon2: number) {
   return d.toFixed(2);
 }
 
-function caluculateDistance(code1: string, code2: string) {
-  const airport1 = airports[code1];
-  const airport2 = airports[code2];
-
-  if (!airport1 || !airport2) {
-    throw new Error('Airport not found');
-  }
-
-  return calcCrow(
-    Number(airport1.lat),
-    Number(airport1.longitude),
-    Number(airport2.lat),
-    Number(airport2.lat)
-  );
-}
-
 export function getDistance(code1: string, code2: string): Promise<string> {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

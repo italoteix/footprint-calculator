@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -13,26 +15,51 @@ import {
   Text,
   VStack
 } from '@chakra-ui/react';
-import { PropsValue } from 'chakra-react-select';
+import { useQuery } from '@tanstack/react-query';
 
 import { ReactComponent as AirplaneIcon } from '../../assets/images/airplane.svg';
 import { TravelType } from '../../model';
 import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
+import { getDistance } from '../../mockedServer/getDistance';
+import { calculateFootprint } from '../../utils/calculateFootprint';
 
 interface Inputs {
-  departure: PropsValue<AirportOption>;
-  destination: PropsValue<AirportOption>;
+  departure: AirportOption;
+  destination: AirportOption;
   numberOfTravelers: number;
   type: TravelType;
 }
 
+const emptyFormValue = {
+  departure: { label: '', value: '' },
+  destination: { label: '', value: '' },
+  numberOfTravelers: 0,
+  type: TravelType.ONE_WAY
+};
+
 export const Home = () => {
+  const [submitedValues, setSubmitedValues] = useState(emptyFormValue);
+  const { data: footprint } = useQuery(
+    ['distances', submitedValues.departure.value, submitedValues.destination.value],
+    () =>
+      getDistance(submitedValues.departure.value, submitedValues.destination.value).then(
+        (distance) =>
+          calculateFootprint({
+            distance,
+            numberOfTravelers: submitedValues.numberOfTravelers,
+            type: submitedValues.type
+          })
+      )
+  );
   const { handleSubmit, control } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    setSubmitedValues(data);
+  };
 
   return (
     <Container maxW='container.xl' pt={14}>
-      <Grid templateRows='auto auto' templateColumns='2fr 1fr' gap={10}>
+      <Grid templateRows='auto auto' templateColumns='3fr 1fr' rowGap={10} columnGap={16}>
         <GridItem>
           <Heading as='h1' mb={2} textTransform='uppercase'>
             Calculate your footprint
@@ -49,6 +76,11 @@ export const Home = () => {
             <Heading textTransform='uppercase' fontSize='lg' as='h4'>
               Flights
             </Heading>
+            {footprint && (
+              <Text as='small' fontWeight='bold' fontSize='sm' marginLeft='auto'>
+                {footprint} kg
+              </Text>
+            )}
           </Flex>
 
           <VStack spacing={6} as='form' onSubmit={handleSubmit(onSubmit)}>
@@ -80,8 +112,8 @@ export const Home = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <Select placeholder='Type*' {...field}>
-                  <option value='option1'>Option 1</option>
-                  <option value='option2'>Option 2</option>
+                  <option value={TravelType.ONE_WAY}>One way</option>
+                  <option value={TravelType.RETURN_TRIP}>Return trip</option>
                 </Select>
               )}
             />
@@ -92,10 +124,23 @@ export const Home = () => {
         </GridItem>
 
         <GridItem rowStart={2}>
-          <Heading fontSize='2xl' mb={5}>
-            6.1 tonnes
-          </Heading>
-          <Text color='gray.400'>World average CO2 footprint per person per year</Text>
+          <VStack spacing={6} alignItems='flex-start'>
+            {footprint && (
+              <Box>
+                <Heading fontSize='2xl' mb={5}>
+                  {footprint} kg
+                </Heading>
+                <Text color='gray.400'>Your CO2 footprint</Text>
+              </Box>
+            )}
+
+            <Box>
+              <Heading fontSize='2xl' mb={5}>
+                6.1 tonnes
+              </Heading>
+              <Text color='gray.400'>World average CO2 footprint per person per year</Text>
+            </Box>
+          </VStack>
         </GridItem>
       </Grid>
     </Container>
