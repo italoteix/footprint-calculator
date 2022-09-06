@@ -22,6 +22,7 @@ import { TravelType } from '../../model';
 import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
 import { getDistance } from '../../mockedServer/getDistance';
 import { calculateFootprint } from '../../utils/calculateFootprint';
+import { errorMessages } from '../../utils/validation';
 
 interface Inputs {
   departure: AirportOption;
@@ -51,15 +52,26 @@ export const Home = () => {
           })
       )
   );
-  const { handleSubmit, control } = useForm<Inputs>();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     setSubmitedValues(data);
   };
 
+  const { required } = errorMessages;
+
   return (
     <Container maxW='container.xl' pt={14}>
-      <Grid templateRows='auto auto' templateColumns='3fr 1fr' rowGap={10} columnGap={16}>
+      <Grid
+        templateRows={{ md: 'repeat(2, auto)' }}
+        templateColumns={{ md: '3fr 1fr' }}
+        rowGap={10}
+        columnGap={16}
+      >
         <GridItem>
           <Heading as='h1' mb={2} textTransform='uppercase'>
             Calculate your footprint
@@ -70,7 +82,7 @@ export const Home = () => {
           </Text>
         </GridItem>
 
-        <GridItem rowStart={2}>
+        <GridItem rowStart={{ md: 2 }}>
           <Flex alignItems='center' mb={6}>
             <Icon as={AirplaneIcon} h={12} w={12} mr={4} />
             <Heading textTransform='uppercase' fontSize='lg' as='h4'>
@@ -87,21 +99,33 @@ export const Home = () => {
             <Controller
               name='departure'
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => <AirplaneAutocomplete placeholder='From*' {...field} />}
+              rules={{ required }}
+              render={({ field }) => (
+                <AirplaneAutocomplete
+                  placeholder='From*'
+                  {...field}
+                  isInvalid={Boolean(errors.departure)}
+                />
+              )}
             />
             <Controller
               name='destination'
               control={control}
-              rules={{ required: true }}
-              render={({ field }) => <AirplaneAutocomplete placeholder='To*' {...field} />}
+              rules={{ required }}
+              render={({ field }) => (
+                <AirplaneAutocomplete
+                  placeholder='To*'
+                  {...field}
+                  isInvalid={Boolean(errors.destination)}
+                />
+              )}
             />
             <Controller
               name='numberOfTravelers'
               control={control}
-              rules={{ required: true }}
+              rules={{ required }}
               render={({ field }) => (
-                <NumberInput w='100%' {...field}>
+                <NumberInput w='100%' {...field} isInvalid={Boolean(errors.numberOfTravelers)}>
                   <NumberInputField placeholder='Number of travelers*' />
                 </NumberInput>
               )}
@@ -109,9 +133,9 @@ export const Home = () => {
             <Controller
               name='type'
               control={control}
-              rules={{ required: true }}
+              rules={{ required }}
               render={({ field }) => (
-                <Select placeholder='Type*' {...field}>
+                <Select placeholder='Type*' {...field} isInvalid={Boolean(errors.type)}>
                   <option value={TravelType.ONE_WAY}>One way</option>
                   <option value={TravelType.RETURN_TRIP}>Return trip</option>
                 </Select>
@@ -123,7 +147,7 @@ export const Home = () => {
           </VStack>
         </GridItem>
 
-        <GridItem rowStart={2}>
+        <GridItem rowStart={{ md: 2 }}>
           <VStack spacing={6} alignItems='flex-start'>
             {footprint && (
               <Box>
