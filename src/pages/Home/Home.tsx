@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query';
 import { ReactComponent as AirplaneIcon } from '../../assets/images/airplane.svg';
 import { TravelType } from '../../model';
 import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
+import { AsideBlock } from '../../components/AsideBlock';
 import { getDistance } from '../../mockedServer/getDistance';
 import { calculateFootprint } from '../../utils/calculateFootprint';
 import { errorMessages, integerRegex } from '../../utils/validation';
@@ -175,21 +176,12 @@ export const Home = () => {
 
         <GridItem rowStart={{ md: 2 }}>
           <VStack spacing={6} alignItems='flex-start'>
-            {footprint && (
-              <Box>
-                <Heading fontSize='2xl' mb={5}>
-                  {footprint} kg
-                </Heading>
-                <Text color='gray.400'>Your CO2 footprint</Text>
-              </Box>
-            )}
+            {footprint && <AsideBlock title={`${footprint} kg`} message='Your CO2 footprint' />}
 
-            <Box>
-              <Heading fontSize='2xl' mb={5}>
-                6.1 tonnes
-              </Heading>
-              <Text color='gray.400'>World average CO2 footprint per person per year</Text>
-            </Box>
+            <AsideBlock
+              title='6.1 tonnes'
+              message='World average CO2 footprint per person per year'
+            />
           </VStack>
         </GridItem>
       </Grid>
