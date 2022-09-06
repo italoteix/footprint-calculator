@@ -9,8 +9,11 @@ import {
   GridItem,
   Heading,
   Icon,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
+  NumberInputStepper,
   Select,
   Text,
   VStack
@@ -22,7 +25,7 @@ import { TravelType } from '../../model';
 import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
 import { getDistance } from '../../mockedServer/getDistance';
 import { calculateFootprint } from '../../utils/calculateFootprint';
-import { errorMessages } from '../../utils/validation';
+import { errorMessages, integerRegex } from '../../utils/validation';
 
 interface Inputs {
   departure: AirportOption;
@@ -62,7 +65,7 @@ export const Home = () => {
     setSubmitedValues(data);
   };
 
-  const { required } = errorMessages;
+  const { required, integer } = errorMessages;
 
   return (
     <Container maxW='container.xl' pt={14}>
@@ -123,10 +126,26 @@ export const Home = () => {
             <Controller
               name='numberOfTravelers'
               control={control}
-              rules={{ required }}
+              rules={{
+                required,
+                pattern: {
+                  value: integerRegex,
+                  message: integer
+                }
+              }}
               render={({ field }) => (
-                <NumberInput w='100%' {...field} isInvalid={Boolean(errors.numberOfTravelers)}>
+                <NumberInput
+                  w='100%'
+                  {...field}
+                  isInvalid={Boolean(errors.numberOfTravelers)}
+                  min={1}
+                  step={1}
+                >
                   <NumberInputField placeholder='Number of travelers*' />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
                 </NumberInput>
               )}
             />
