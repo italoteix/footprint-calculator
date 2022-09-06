@@ -43,7 +43,7 @@ const emptyFormValue = {
 
 export const Home = () => {
   const [submitedValues, setSubmitedValues] = useState(emptyFormValue);
-  const { data: footprint } = useQuery(
+  const { data: footprint, isLoading } = useQuery(
     ['distances', submitedValues.departure.value, submitedValues.destination.value],
     () =>
       getDistance(submitedValues.departure.value, submitedValues.destination.value).then(
@@ -53,12 +53,13 @@ export const Home = () => {
             numberOfTravelers: submitedValues.numberOfTravelers,
             type: submitedValues.type
           })
-      )
+      ),
+    { staleTime: Infinity, refetchOnWindowFocus: false, refetchOnMount: false }
   );
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors, isSubmitted }
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
@@ -160,7 +161,13 @@ export const Home = () => {
                 </Select>
               )}
             />
-            <Button type='submit' colorScheme='brand' alignSelf='flex-start' w='150px'>
+            <Button
+              type='submit'
+              colorScheme='brand'
+              alignSelf='flex-start'
+              w='150px'
+              isLoading={isSubmitted && isLoading}
+            >
               Calculate
             </Button>
           </VStack>
