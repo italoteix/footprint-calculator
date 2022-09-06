@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import {
-  Box,
   Button,
   Container,
   Flex,
+  FormControl,
+  FormErrorMessage,
   Grid,
   GridItem,
   Heading,
@@ -106,11 +107,10 @@ export const Home = () => {
               control={control}
               rules={{ required }}
               render={({ field }) => (
-                <AirplaneAutocomplete
-                  placeholder='From*'
-                  {...field}
-                  isInvalid={Boolean(errors.departure)}
-                />
+                <FormControl isInvalid={Boolean(errors.departure)}>
+                  <AirplaneAutocomplete placeholder='From*' {...field} />
+                  <FormErrorMessage>{errors.departure?.message}</FormErrorMessage>
+                </FormControl>
               )}
             />
             <Controller
@@ -118,11 +118,10 @@ export const Home = () => {
               control={control}
               rules={{ required }}
               render={({ field }) => (
-                <AirplaneAutocomplete
-                  placeholder='To*'
-                  {...field}
-                  isInvalid={Boolean(errors.destination)}
-                />
+                <FormControl isInvalid={Boolean(errors.destination)}>
+                  <AirplaneAutocomplete placeholder='To*' {...field} />
+                  <FormErrorMessage>{errors.destination?.message}</FormErrorMessage>
+                </FormControl>
               )}
             />
             <Controller
@@ -136,19 +135,16 @@ export const Home = () => {
                 }
               }}
               render={({ field }) => (
-                <NumberInput
-                  w='100%'
-                  {...field}
-                  isInvalid={Boolean(errors.numberOfTravelers)}
-                  min={1}
-                  step={1}
-                >
-                  <NumberInputField placeholder='Number of travelers*' />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
+                <FormControl isInvalid={Boolean(errors.numberOfTravelers)}>
+                  <NumberInput w='100%' {...field} min={1} step={1}>
+                    <NumberInputField placeholder='Number of travelers*' />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                  <FormErrorMessage>{errors.numberOfTravelers?.message}</FormErrorMessage>
+                </FormControl>
               )}
             />
             <Controller
@@ -156,10 +152,13 @@ export const Home = () => {
               control={control}
               rules={{ required }}
               render={({ field }) => (
-                <Select placeholder='Type*' {...field} isInvalid={Boolean(errors.type)}>
-                  <option value={TravelType.ONE_WAY}>One way</option>
-                  <option value={TravelType.RETURN_TRIP}>Return trip</option>
-                </Select>
+                <FormControl isInvalid={Boolean(errors.type)}>
+                  <Select placeholder='Type*' {...field}>
+                    <option value={TravelType.ONE_WAY}>One way</option>
+                    <option value={TravelType.RETURN_TRIP}>Return trip</option>
+                  </Select>
+                  <FormErrorMessage>{errors.type?.message}</FormErrorMessage>
+                </FormControl>
               )}
             />
             <Button
