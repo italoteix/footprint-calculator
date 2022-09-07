@@ -25,6 +25,7 @@ import { ReactComponent as AirplaneIcon } from '../../assets/images/airplane.svg
 import { TravelType } from '../../model';
 import { AirportOption, AirplaneAutocomplete } from '../../components/AirplaneAutocomplete';
 import { AsideBlock } from '../../components/AsideBlock';
+import { ErrorDisplay } from '../../components/ErrorDisplay';
 import { getDistance } from '../../mockedServer/getDistance';
 import { calculateFootprint } from '../../utils/calculateFootprint';
 import { errorMessages, integerRegex } from '../../utils/validation';
@@ -46,7 +47,11 @@ const emptyFormValue = {
 export const Home = () => {
   const [submitedValues, setSubmitedValues] = useState(emptyFormValue);
   const [footprint, setFootprint] = useState('');
-  const { data: distance, isLoading } = useQuery(
+  const {
+    data: distance,
+    isLoading,
+    error
+  } = useQuery(
     ['distances', submitedValues.departure.value, submitedValues.destination.value],
     () => getDistance(submitedValues.departure.value, submitedValues.destination.value),
     { staleTime: Infinity, refetchOnWindowFocus: false, refetchOnMount: false, initialData: '' }
@@ -74,6 +79,10 @@ export const Home = () => {
       );
     }
   }, [distance, submitedValues.numberOfTravelers, submitedValues.type]);
+
+  if (error) {
+    return <ErrorDisplay title='Sorry... there was an error' message={(error as Error).message} />;
+  }
 
   return (
     <Container maxW='container.xl' pt={14}>
