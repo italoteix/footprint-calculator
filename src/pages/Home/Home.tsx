@@ -60,16 +60,11 @@ export const Home = () => {
     error
   } = useQuery(
     ['distances', submittedValues.departure.value, submittedValues.destination.value],
-    () =>
-      getDistance(submittedValues.departure.value, submittedValues.destination.value).then((d) => {
-        console.log('call', d);
-        return d;
-      }),
+    () => getDistance(submittedValues.departure.value, submittedValues.destination.value),
     { refetchOnWindowFocus: false, initialData: '', enabled: isSubmitting }
   );
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log('sub');
     setSubmittedValues(data);
   };
 

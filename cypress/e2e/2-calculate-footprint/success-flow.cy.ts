@@ -14,7 +14,7 @@ describe('Success flow', () => {
 
     cy.get('select').select(2);
 
-    cy.get('.chakra-button').click();
-    cy.contains('1089.10 kg');
+    cy.get('.chakra-button').click().click();
+    cy.contains('4707.51 kg');
   });
 });
