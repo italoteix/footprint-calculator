@@ -37,6 +37,10 @@ Run `npm test`.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+## Running end-to-end tests
+
+To run end-to-end tests locally, first start the app runing `npm start` and then start cypress running `npx cypress open`.
+
 ## Further help
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
