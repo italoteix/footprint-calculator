@@ -1,9 +1,11 @@
 # Footprint calculator
 
+Live Demo: https://footprint-calculator.vercel.app/
+
 This project was created as a challenge for [South pole](https://www.southpole.com/).
 It shows a calculator for personal CO2 emission during flights.
 
-Regarding the layout, some dummy stuff was added just to make the project look more like a complete application, instead of just showing the required components.
+Regarding the layout, some dummy stuff was added just to make the project look more like a complete application, instead of just showing the required components. For demo purpose, the airport distance api is mocked with a simple function that returns the distance based on coordinates. The code for this mock is inside `src/mockedServer`
 
 ## Project Features
 
