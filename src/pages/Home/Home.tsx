@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import {
   Button,
@@ -45,18 +45,11 @@ const emptyFormValue = {
 
 export const Home = () => {
   const [submitedValues, setSubmitedValues] = useState(emptyFormValue);
-  const { data: footprint, isLoading } = useQuery(
+  const [footprint, setFootprint] = useState('');
+  const { data: distance, isLoading } = useQuery(
     ['distances', submitedValues.departure.value, submitedValues.destination.value],
-    () =>
-      getDistance(submitedValues.departure.value, submitedValues.destination.value).then(
-        (distance) =>
-          calculateFootprint({
-            distance,
-            numberOfTravelers: submitedValues.numberOfTravelers,
-            type: submitedValues.type
-          })
-      ),
-    { staleTime: Infinity, refetchOnWindowFocus: false, refetchOnMount: false }
+    () => getDistance(submitedValues.departure.value, submitedValues.destination.value),
+    { staleTime: Infinity, refetchOnWindowFocus: false, refetchOnMount: false, initialData: '' }
   );
   const {
     handleSubmit,
@@ -69,6 +62,18 @@ export const Home = () => {
   };
 
   const { required, integer } = errorMessages;
+
+  useEffect(() => {
+    if (distance) {
+      setFootprint(
+        calculateFootprint({
+          distance,
+          numberOfTravelers: submitedValues.numberOfTravelers,
+          type: submitedValues.type
+        })
+      );
+    }
+  }, [distance, submitedValues.numberOfTravelers, submitedValues.type]);
 
   return (
     <Container maxW='container.xl' pt={14}>
