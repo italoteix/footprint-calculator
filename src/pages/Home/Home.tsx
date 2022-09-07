@@ -52,7 +52,7 @@ export const Home = () => {
     handleSubmit,
     control,
     formState: { errors, isSubmitted, isSubmitting, isValid }
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({ mode: 'onChange' });
 
   const {
     data: distance,
@@ -61,7 +61,7 @@ export const Home = () => {
   } = useQuery(
     ['distances', submittedValues.departure.value, submittedValues.destination.value],
     () => getDistance(submittedValues.departure.value, submittedValues.destination.value),
-    { refetchOnWindowFocus: false, initialData: '', enabled: isSubmitting }
+    { refetchOnWindowFocus: false, initialData: '', enabled: isSubmitting && isValid }
   );
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
