@@ -54,7 +54,7 @@ export const Home = () => {
   } = useQuery(
     ['distances', submitedValues.departure.value, submitedValues.destination.value],
     () => getDistance(submitedValues.departure.value, submitedValues.destination.value),
-    { staleTime: Infinity, refetchOnWindowFocus: false, refetchOnMount: false, initialData: '' }
+    { refetchOnWindowFocus: false, initialData: '' }
   );
   const {
     handleSubmit,
@@ -80,7 +80,7 @@ export const Home = () => {
     }
   }, [distance, submitedValues.numberOfTravelers, submitedValues.type]);
 
-  if (error) {
+  if (error && isSubmitted) {
     return <ErrorDisplay title='Sorry... there was an error' message={(error as Error).message} />;
   }
 
