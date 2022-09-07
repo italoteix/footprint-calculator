@@ -20,23 +20,26 @@ function calcCrow(lat1: number, lon1: number, lat2: number, lon2: number) {
   return d.toFixed(2);
 }
 
-export function getDistance(code1: string, code2: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const airport1 = airports[code1];
-      const airport2 = airports[code2];
+type IATA = string;
 
-      if (!airport1 || !airport2) {
+export function getDistance(from: IATA, to: IATA): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // small timeout to simulate network latency, for demo purposes
+    setTimeout(() => {
+      const originAirport = airports[from];
+      const destinationAirport = airports[to];
+
+      if (!originAirport || !destinationAirport) {
         reject(new Error('Airport not found'));
         return;
       }
 
       resolve(
         calcCrow(
-          Number(airport1.lat),
-          Number(airport1.longitude),
-          Number(airport2.lat),
-          Number(airport2.lat)
+          Number(originAirport.lat),
+          Number(originAirport.longitude),
+          Number(destinationAirport.lat),
+          Number(destinationAirport.longitude)
         )
       );
     }, 250);
