@@ -45,25 +45,32 @@ const emptyFormValue = {
 };
 
 export const Home = () => {
-  const [submitedValues, setSubmitedValues] = useState(emptyFormValue);
+  const [submittedValues, setSubmittedValues] = useState(emptyFormValue);
   const [footprint, setFootprint] = useState('');
-  const {
-    data: distance,
-    isLoading,
-    error
-  } = useQuery(
-    ['distances', submitedValues.departure.value, submitedValues.destination.value],
-    () => getDistance(submitedValues.departure.value, submitedValues.destination.value),
-    { refetchOnWindowFocus: false, initialData: '' }
-  );
+
   const {
     handleSubmit,
     control,
-    formState: { errors, isSubmitted }
+    formState: { errors, isSubmitted, isSubmitting, isValid }
   } = useForm<Inputs>();
 
+  const {
+    data: distance,
+    isFetching,
+    error
+  } = useQuery(
+    ['distances', submittedValues.departure.value, submittedValues.destination.value],
+    () =>
+      getDistance(submittedValues.departure.value, submittedValues.destination.value).then((d) => {
+        console.log('call', d);
+        return d;
+      }),
+    { refetchOnWindowFocus: false, initialData: '', enabled: isSubmitting }
+  );
+
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    setSubmitedValues(data);
+    console.log('sub');
+    setSubmittedValues(data);
   };
 
   const { required, integer } = errorMessages;
@@ -73,14 +80,14 @@ export const Home = () => {
       setFootprint(
         calculateFootprint({
           distance,
-          numberOfTravelers: submitedValues.numberOfTravelers,
-          type: submitedValues.type
+          numberOfTravelers: submittedValues.numberOfTravelers,
+          type: submittedValues.type
         })
       );
     }
-  }, [distance, submitedValues.numberOfTravelers, submitedValues.type]);
+  }, [distance, submittedValues.numberOfTravelers, submittedValues.type]);
 
-  if (error && isSubmitted) {
+  if (error) {
     return <ErrorDisplay title='Sorry... there was an error' message={(error as Error).message} />;
   }
 
@@ -180,7 +187,7 @@ export const Home = () => {
               colorScheme='brand'
               alignSelf='flex-start'
               w='150px'
-              isLoading={isSubmitted && isLoading}
+              isLoading={isSubmitted && isFetching}
             >
               Calculate
             </Button>
